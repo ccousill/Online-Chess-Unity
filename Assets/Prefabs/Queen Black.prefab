@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1533737564820112024}
+  - component: {fileID: 3383156339057849673}
   m_Layer: 0
   m_Name: Queen Black
   m_TagString: Untagged
@@ -32,6 +33,20 @@ Transform:
   - {fileID: 4626471138899992097}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3383156339057849673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 554762925925902381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2979052b97d7079438b5253fe3c26abd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  team: 
+  availableMoves: []
 --- !u!1 &8767122196794430440
 GameObject:
   m_ObjectHideFlags: 0

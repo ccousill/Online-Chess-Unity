@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4513832814814496710}
   - component: {fileID: 4622099993678629277}
   - component: {fileID: 1435741219033536900}
+  - component: {fileID: 3049524089621437324}
   m_Layer: 0
   m_Name: White Tile
   m_TagString: Untagged
@@ -106,6 +107,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3049524089621437324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 695209928450089679}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c14a2f2cd66c06840baca00ba813df12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4781095555980866788
 GameObject:
   m_ObjectHideFlags: 0
@@ -206,7 +219,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 0,0
+  m_text: 1,0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

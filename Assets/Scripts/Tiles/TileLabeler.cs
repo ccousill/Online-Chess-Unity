@@ -20,11 +20,12 @@ public class TileLabeler : MonoBehaviour
             DisplayCoordinates();
             UpdateName();
         }
+        UpdateName();
     }
 
     void DisplayCoordinates(){
         coordinates.x = Mathf.RoundToInt(transform.parent.position.x);
-        coordinates.y = Mathf.RoundToInt(transform.parent.position.y);
+        coordinates.y = Mathf.RoundToInt(transform.parent.position.z);
         label.text = coordinates.x + "," + coordinates.y;
     }
 
