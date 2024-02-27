@@ -25,7 +25,7 @@ public class PieceCreator : MonoBehaviour
         }
     }
 
-    public void InitializePieces(){
+    public void InitializePieces(Chessboard board){
         GameObject PiecesObject = new GameObject("Pieces");
         PiecesObject.transform.parent = transform;
         for(int x = 0;x<8;x++){
@@ -36,7 +36,7 @@ public class PieceCreator : MonoBehaviour
                     pieceObject.transform.parent = PiecesObject.transform;
                     pieceObject.name = pieceSetup[x,y];
                     Piece piece = pieceObject.GetComponent<Piece>();
-                    piece.SetData(color,new Vector2Int(x,y));
+                    piece.SetData(color,new Vector2Int(x,y),board);
                 }
             }
         }
