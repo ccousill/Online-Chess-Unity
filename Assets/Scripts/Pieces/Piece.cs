@@ -12,7 +12,7 @@ public abstract class Piece : MonoBehaviour
     public bool hasMoved {get; private set;}
     public List<Vector2Int> availableMoves;
     public abstract List<Vector2Int> SelectAvailableSquares();
-    Chessboard board;
+    public Chessboard board;
 
     void Awake(){
         hasMoved = false;
@@ -35,7 +35,13 @@ public abstract class Piece : MonoBehaviour
     }
     public void MovePiece(Vector2Int newPostition){
         currentPosition = newPostition;
+        hasMoved = true;
         transform.position = new Vector3(newPostition.x,transform.position.y,newPostition.y);
+    }
+
+    protected bool IsWithinBounds(int x, int y)
+    {
+        return x >= 0 && x < Chessboard.BoardSize && y >= 0 && y < Chessboard.BoardSize;
     }
 
 }

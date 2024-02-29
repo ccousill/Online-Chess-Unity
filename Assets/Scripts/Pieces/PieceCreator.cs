@@ -20,6 +20,7 @@ public class PieceCreator : MonoBehaviour
     {"Rook White","Pawn White",null,null,null,null,"Pawn Black","Rook Black"}
     };
     void Awake(){
+        Debug.Log("awaking");
         foreach(GameObject piecePrefab in piecePrefabs){
             dictionary[piecePrefab.name] = piecePrefab;
         }
@@ -42,7 +43,7 @@ public class PieceCreator : MonoBehaviour
         }
     }
 
-    private GameObject CreatePiece(String pieceName,Vector2Int position){
+    private GameObject CreatePiece(string pieceName,Vector2Int position){
         GameObject prefab = dictionary[pieceName];
         if(prefab){
             GameObject newPiece = Instantiate(prefab,new Vector3(position.x,.13f,position.y),Quaternion.identity);

@@ -6,14 +6,14 @@ using UnityEngine;
 public class Player
 {
     public string PlayerColor {get;set;}
-    public List<Piece> CapturedPieces {get;}
-     public List<Piece> activePieces {get;private set;}
+    public List<Piece> capturedPieces {get;}
+    public List<Piece> activePieces {get;private set;}
     public Chessboard board {get;set;}
    
 
     public Player(string playerColor,Chessboard board){
         PlayerColor = playerColor;
-        CapturedPieces = new List<Piece>();
+        capturedPieces = new List<Piece>();
         this.board = board;
         activePieces = new List<Piece>();
 
@@ -24,7 +24,7 @@ public class Player
         }
     }
 
-    public void RemovePiece(Piece piece){
+    public void RemoveActivePiece(Piece piece){
         if(activePieces.Contains(piece)){
             activePieces.Remove(piece);
         }
@@ -38,6 +38,6 @@ public class Player
         }
     }
     public void addCapturedPiece(Piece piece){
-        CapturedPieces.Add(piece);
+        capturedPieces.Add(piece);
     }
 }

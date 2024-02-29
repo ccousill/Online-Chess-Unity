@@ -21,7 +21,6 @@ public class BoardCreator : MonoBehaviour
             for(int y = 0;y<boardSize;y++){
                 if(black){
                     tiles[x,y] = Instantiate(BlackTile, new Vector3(x,0,y),Quaternion.identity);
-                    
                 }else{
                     tiles[x,y] = Instantiate(WhiteTile, new Vector3(x,0,y),Quaternion.identity);
                 }
@@ -32,7 +31,6 @@ public class BoardCreator : MonoBehaviour
                 if(y!=boardSize-1){
                     black = !black; 
                 }
-                
             }
         }
     }

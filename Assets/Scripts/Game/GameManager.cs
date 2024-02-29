@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -26,8 +27,10 @@ public class GameManager : MonoBehaviour
         foreach(Piece piece in board.AllPieces()){
             if(piece.team == "White"){
                 piece.player = white;
+                whitePlayer.AddActivePiece(piece);
             }else{
                 piece.player = black;
+                blackPlayer.AddActivePiece(piece);
             } 
         }
     }
@@ -42,8 +45,9 @@ public class GameManager : MonoBehaviour
         GenerateAllMovesOfPlayer(activePlayer);
         GenerateAllMovesOfPlayer(getOtherPlayer(activePlayer));
         ChangeTeam();
+        Debug.Log(activePlayer.PlayerColor);
     }
-
+ 
     private void GenerateAllMovesOfPlayer(Player player){
         player.GenerateAllPossibleMoves();
     }
@@ -54,5 +58,9 @@ public class GameManager : MonoBehaviour
 
     private void ChangeTeam(){
         activePlayer = activePlayer == whitePlayer ? blackPlayer : whitePlayer;
+    }
+
+    public bool IsTeamTurn(string team){
+        return activePlayer.PlayerColor == team;
     }
 }
