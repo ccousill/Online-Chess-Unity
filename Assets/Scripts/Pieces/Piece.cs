@@ -9,6 +9,7 @@ public abstract class Piece : MonoBehaviour
     public string team;
     public Player player {get;set;}
     public Vector2Int currentPosition {get;set;}
+    public Vector2Int previousPosition {get;set;}
     public bool hasMoved {get; private set;}
     public List<Vector2Int> availableMoves;
     public abstract List<Vector2Int> SelectAvailableSquares();
@@ -16,6 +17,7 @@ public abstract class Piece : MonoBehaviour
 
     void Awake(){
         hasMoved = false;
+        previousPosition = new Vector2Int();
         availableMoves = new List<Vector2Int>();
     }
     
@@ -34,6 +36,7 @@ public abstract class Piece : MonoBehaviour
         this.board = board;
     }
     public void MovePiece(Vector2Int newPostition){
+        previousPosition = currentPosition;
         currentPosition = newPostition;
         hasMoved = true;
         transform.position = new Vector3(newPostition.x,transform.position.y,newPostition.y);

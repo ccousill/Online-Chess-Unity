@@ -9,7 +9,7 @@ public class PieceCreator : MonoBehaviour
     [SerializeField] private GameObject[] piecePrefabs; 
     
     Dictionary<string,GameObject> dictionary = new Dictionary<string, GameObject>();
-    private string[,] pieceSetup = {
+    private string[,] pieceSetup2 = {
     {"Rook White","Pawn White",null,null,null,null,"Pawn Black","Rook Black"},
     {"Knight White","Pawn White",null,null,null,null,"Pawn Black","Knight Black"},
     {"Bishop White","Pawn White",null,null,null,null,"Pawn Black","Bishop Black"},
@@ -19,6 +19,30 @@ public class PieceCreator : MonoBehaviour
     {"Knight White","Pawn White",null,null,null,null,"Pawn Black","Knight Black"},
     {"Rook White","Pawn White",null,null,null,null,"Pawn Black","Rook Black"}
     };
+
+    private string[,] pieceSetup1 = {
+    {"Rook White","Pawn White",null,null,null,null,"Pawn Black","Rook Black"},
+    {null,"Pawn White",null,null,null,null,"Pawn Black","Knight Black"},
+    {null,"Pawn White",null,null,null,null,"Pawn Black","Bishop Black"},
+    {null,"Pawn White",null,null,null,null,"Pawn Black","Queen Black"},
+    {"King White","Pawn White",null,null,null,null,"Pawn Black","King Black"},
+    {null,"Pawn White",null,null,null,null,"Pawn Black","Bishop Black"},
+    {null,"Pawn White",null,null,null,null,"Pawn Black","Knight Black"},
+    {"Rook White","Pawn White",null,null,null,null,"Pawn Black","Rook Black"}
+    };
+
+    private string[,] pieceSetup = {
+    {"Rook White","Pawn White",null,null,null,null,"Pawn Black","Rook Black"},
+    {"Knight White","Pawn White",null,null,null,null,"Pawn Black","Knight Black"},
+    {"Bishop White","Pawn White",null,null,null,null,"Pawn Black","Bishop Black"},
+    {"Queen White","Pawn White",null,null,null,null,"Pawn Black","Queen Black"},
+    {"King White","Pawn White",null,null,null,null,"Pawn Black","King Black"},
+    {"Bishop White","Pawn White",null,null,null,null,"Pawn White",null},
+    {"Knight White","Pawn White",null,null,null,null,"Pawn Black","Knight Black"},
+    {"Rook White","Pawn White",null,null,null,null,"Pawn Black","Rook Black"}
+    };
+
+    
     void Awake(){
         Debug.Log("awaking");
         foreach(GameObject piecePrefab in piecePrefabs){
@@ -41,6 +65,19 @@ public class PieceCreator : MonoBehaviour
                 }
             }
         }
+    }
+
+    public Piece InitializePiece(Chessboard board,Piece previousPiece,string prefabName){
+        Transform PiecesObject = transform.Find("Pieces");
+        Vector2Int prevPos = previousPiece.currentPosition;
+        string color = prefabName.Split(' ')[1];
+        GameObject pieceObject = CreatePiece(prefabName,prevPos);
+        pieceObject.transform.parent = PiecesObject.transform;
+        pieceObject.name = prefabName;
+        Piece piece = pieceObject.GetComponent<Piece>();
+        piece.SetData(color,prevPos,board);
+        board.pieceBoard[prevPos.x,prevPos.y] = piece;
+        return piece;
     }
 
     private GameObject CreatePiece(string pieceName,Vector2Int position){

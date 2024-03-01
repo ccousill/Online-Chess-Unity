@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
     Chessboard board;
     private Player whitePlayer;
     private Player blackPlayer;
-    private Player activePlayer;
+    public Player activePlayer {get;set;}
     void Start()
     {
         board = FindObjectOfType<Chessboard>();

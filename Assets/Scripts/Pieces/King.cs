@@ -9,6 +9,10 @@ public class King : Piece
         availableMoves.Clear();
         int xPiecePosition = currentPosition.x;
         int yPiecePosition = currentPosition.y;
+        if (!hasMoved)
+        {
+            CheckCastle(xPiecePosition);
+        }
         CheckAround(xPiecePosition, yPiecePosition);
         return availableMoves;
     }
@@ -33,6 +37,37 @@ public class King : Piece
                     }
                 }
             }
+        }
+    }
+
+    void CheckCastle(int xPiecePosition)
+    {
+        bool isBlocked = false;
+        int leftRookX = 0;
+        int rightRookX = 7;
+        for (int i = xPiecePosition - 1; i > leftRookX; i--)
+        {
+            if (board.GetPieceOnSquare(new Vector2Int(i, currentPosition.y)) != null)
+            {
+                isBlocked = true;
+            }
+        }
+        Piece leftRook = board.GetPieceOnSquare(new Vector2Int(leftRookX,currentPosition.y));
+        if(!isBlocked && leftRook is Rook && !leftRook.hasMoved){
+            availableMoves.Add(new Vector2Int(currentPosition.x - 2,currentPosition.y));
+        }
+
+        isBlocked = false;
+        for (int i = xPiecePosition + 1; i < rightRookX ; i++)
+        {
+            if (board.GetPieceOnSquare(new Vector2Int(i, currentPosition.y)) != null)
+            {
+                isBlocked = true;
+            }
+        }
+        Piece rightRook = board.GetPieceOnSquare(new Vector2Int(rightRookX,currentPosition.y));
+        if(!isBlocked && rightRook is Rook && !rightRook.hasMoved){
+            availableMoves.Add(new Vector2Int(currentPosition.x + 2,currentPosition.y));
         }
     }
 }

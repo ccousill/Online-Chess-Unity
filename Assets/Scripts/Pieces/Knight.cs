@@ -22,12 +22,24 @@ public class Knight : Piece
         int newX = x + xDirection;
         int newY = y + yDirection * 2;
         if(IsWithinBounds(newX,newY)){
-            availableMoves.Add(new Vector2Int(newX,newY));
+            AddMove(newX,newY);
         }
         newX = x + xDirection * 2;
         newY = y + yDirection;
         if(IsWithinBounds(newX,newY)){
-            availableMoves.Add(new Vector2Int(newX,newY));
+            AddMove(newX,newY);
         }
     }
+
+    private void AddMove(int newX, int newY)
+    {
+        if (IsWithinBounds(newX, newY))
+        {
+            if (board.GetPieceOnSquare(new Vector2Int(newX, newY)) == null || board.IsTakablePiece(this,board.GetPieceOnSquare(new Vector2Int(newX, newY))))
+            {
+                availableMoves.Add(new Vector2Int(newX, newY));
+            }
+        }
+    }
+
 }
