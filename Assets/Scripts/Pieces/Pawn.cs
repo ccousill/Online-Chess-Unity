@@ -29,7 +29,6 @@ public class Pawn : Piece
                 availableMoves.Add(new Vector2Int(board.enPassantablePiece.currentPosition.x, board.enPassantablePiece.currentPosition.y + forwardDirection));
             }
         }
-
         if (IsWithinBounds(forwardOneLeft.x, forwardOneLeft.y) && board.pieceBoard[forwardOneLeft.x, forwardOneLeft.y] != null && board.pieceBoard[forwardOneLeft.x, forwardOneLeft.y].team != team)
         {
             availableMoves.Add(forwardOneLeft);
@@ -44,6 +43,6 @@ public class Pawn : Piece
 
     public bool HasReachedEnd()
     {
-        return (team == "White" && currentPosition.y == Chessboard.BoardSize -1) || (team == "Black" && currentPosition.y == 0);
+        return (team == "White" && currentPosition.y == Chessboard.BoardSize-1) || (team == "Black" && currentPosition.y == 0);
     }
 }

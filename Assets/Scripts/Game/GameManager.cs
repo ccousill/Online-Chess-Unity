@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -11,9 +12,11 @@ public class GameManager : MonoBehaviour
     private Player whitePlayer;
     private Player blackPlayer;
     public Player activePlayer {get;set;}
+    public bool gameOver {get; set;}
     void Start()
     {
         board = FindObjectOfType<Chessboard>();
+        gameOver = false;
         InitializePlayers();
         Debug.Log(board.pieceBoard[0,0].player.PlayerColor);
         StartNewGame();
@@ -42,10 +45,12 @@ public class GameManager : MonoBehaviour
     }
 
     public void EndTurn(){
+        if(gameOver){
+            GameOverSequence();
+        }
         GenerateAllMovesOfPlayer(activePlayer);
         GenerateAllMovesOfPlayer(getOtherPlayer(activePlayer));
         ChangeTeam();
-        Debug.Log(activePlayer.PlayerColor);
     }
  
     private void GenerateAllMovesOfPlayer(Player player){
@@ -62,5 +67,11 @@ public class GameManager : MonoBehaviour
 
     public bool IsTeamTurn(string team){
         return activePlayer.PlayerColor == team;
+    }
+
+    private void GameOverSequence()
+    {
+        Debug.Log("Game Over!");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

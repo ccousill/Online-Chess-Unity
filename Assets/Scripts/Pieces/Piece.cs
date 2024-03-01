@@ -11,6 +11,7 @@ public abstract class Piece : MonoBehaviour
     public Vector2Int currentPosition {get;set;}
     public Vector2Int previousPosition {get;set;}
     public bool hasMoved {get; private set;}
+    public int pieceValue {get; private set;}
     public List<Vector2Int> availableMoves;
     public abstract List<Vector2Int> SelectAvailableSquares();
     public Chessboard board;
@@ -30,8 +31,9 @@ public abstract class Piece : MonoBehaviour
         return availableMoves.Contains(coords);
     }
 
-    public void SetData(string team,Vector2Int position,Chessboard board){
+    public void SetData(string team,Vector2Int position,Chessboard board, int pieceValue){
         this.team = team;
+        this.pieceValue = pieceValue;
         currentPosition = position;
         this.board = board;
     }

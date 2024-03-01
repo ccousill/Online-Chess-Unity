@@ -9,7 +9,21 @@ public class PieceCreator : MonoBehaviour
     [SerializeField] private GameObject[] piecePrefabs; 
     
     Dictionary<string,GameObject> dictionary = new Dictionary<string, GameObject>();
-    private string[,] pieceSetup2 = {
+    Dictionary<string,int> pieceValue = new Dictionary<string, int>(){
+        {"Pawn White", 10},
+        {"Knight White",30},
+        {"Bishop White",30},
+        {"Rook White",50},
+        {"Queen White",90},
+        {"King White", 900},
+        {"Pawn Black", -10},
+        {"Knight Black", -30},
+        {"Bishop Black", -30},
+        {"Rook Black", -50},
+        {"Queen Black", -90},
+        {"King Black", -900},
+    };
+    private string[,] pieceSetup = {
     {"Rook White","Pawn White",null,null,null,null,"Pawn Black","Rook Black"},
     {"Knight White","Pawn White",null,null,null,null,"Pawn Black","Knight Black"},
     {"Bishop White","Pawn White",null,null,null,null,"Pawn Black","Bishop Black"},
@@ -31,7 +45,7 @@ public class PieceCreator : MonoBehaviour
     {"Rook White","Pawn White",null,null,null,null,"Pawn Black","Rook Black"}
     };
 
-    private string[,] pieceSetup = {
+    private string[,] pieceSetup2 = {
     {"Rook White","Pawn White",null,null,null,null,"Pawn Black","Rook Black"},
     {"Knight White","Pawn White",null,null,null,null,"Pawn Black","Knight Black"},
     {"Bishop White","Pawn White",null,null,null,null,"Pawn Black","Bishop Black"},
@@ -61,7 +75,8 @@ public class PieceCreator : MonoBehaviour
                     pieceObject.transform.parent = PiecesObject.transform;
                     pieceObject.name = pieceSetup[x,y];
                     Piece piece = pieceObject.GetComponent<Piece>();
-                    piece.SetData(color,new Vector2Int(x,y),board);
+                    int value = pieceValue[pieceSetup[x,y]];
+                    piece.SetData(color,new Vector2Int(x,y),board, value);
                 }
             }
         }
@@ -75,8 +90,10 @@ public class PieceCreator : MonoBehaviour
         pieceObject.transform.parent = PiecesObject.transform;
         pieceObject.name = prefabName;
         Piece piece = pieceObject.GetComponent<Piece>();
-        piece.SetData(color,prevPos,board);
+        int value = pieceValue[prefabName];
+        piece.SetData(color,prevPos,board, value);
         board.pieceBoard[prevPos.x,prevPos.y] = piece;
+        
         return piece;
     }
 

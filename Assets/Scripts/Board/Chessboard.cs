@@ -1,10 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Android;
+
 
 public class Chessboard : MonoBehaviour
 {
@@ -142,47 +141,41 @@ public class Chessboard : MonoBehaviour
             tookPiece = enPassantablePiece;
         }
         enPassantablePiece = null;
+        if (piece is King && !piece.hasMoved)
+        {
+            CheckCastle(piece, pos);
+        }
         UpdateBoardOnPieceMove(pos, piece.currentPosition, piece, tookPiece);
         selectedPiece.MovePiece(pos);
         if (IsTakablePiece(piece, tookPiece))
         {
             Destroy(tookPiece.gameObject);
         }
-        if (piece is King && !piece.hasMoved)
-        {
-            CheckCastle(piece, pos);
-        }
-        
         if (piece is Pawn)
         {
             Pawn pawn = (Pawn)piece;
             Debug.Log(pawn.HasReachedEnd());
             if (pawn.HasReachedEnd())
             {
-                Debug.Log("promotion");
                 PromotePawn(piece);
             }
-            if (Mathf.Abs(pawn.currentPosition.y - pos.y) == 2)
+            if (Mathf.Abs(pawn.previousPosition.y - pos.y) == 2)
             {
                 enPassantablePiece = piece;
             }
         }
-        
+
         DeselectPiece();
+        if (tookPiece is King)
+        {
+            gameManager.gameOver = true;
+        }
         EndTurn();
     }
 
     private void PromotePawn(Piece piece)
     {
-        Piece newPiece;
-        if (piece.team == "White")
-        {
-            newPiece = pieceCreator.InitializePiece(this,piece,"Queen White");
-
-        }else{
-            newPiece = pieceCreator.InitializePiece(this,piece,"Queen Black");
-        }
-        
+        Piece newPiece = piece.team == "White" ? pieceCreator.InitializePiece(this, piece, "Queen White") : newPiece = pieceCreator.InitializePiece(this, piece, "Queen Black");
         Destroy(piece.gameObject);
         gameManager.activePlayer.AddActivePiece(newPiece);
         selectedPiece = newPiece;
