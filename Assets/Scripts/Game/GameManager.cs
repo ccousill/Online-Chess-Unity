@@ -11,14 +11,13 @@ public class GameManager : MonoBehaviour
     Chessboard board;
     private Player whitePlayer;
     private Player blackPlayer;
-    public Player activePlayer {get;set;}
+    private Player activePlayer;
     public bool gameOver {get; set;}
     void Start()
     {
         board = FindObjectOfType<Chessboard>();
         gameOver = false;
         InitializePlayers();
-        Debug.Log(board.pieceBoard[0,0].player.PlayerColor);
         StartNewGame();
     }
 
@@ -71,7 +70,23 @@ public class GameManager : MonoBehaviour
 
     private void GameOverSequence()
     {
-        Debug.Log("Game Over!");
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
+
+    public void RemovePieceFromPlayer(Piece piece){
+        activePlayer.RemoveActivePiece(piece);
+    }
+
+    public void RemovePieceFromOtherPlayer(Piece piece){
+        getOtherPlayer(activePlayer).RemoveActivePiece(piece);
+    }
+
+    public void AddPieceToPlayer(Piece piece){
+        activePlayer.AddActivePiece(piece);
+    }
+
+    public void AddPieceToOtherPlayer(Piece piece){
+        getOtherPlayer(activePlayer).AddActivePiece(piece);
+    }
+
 }

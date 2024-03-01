@@ -1,14 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEditor;
 using UnityEngine;
 
 
 public class Chessboard : MonoBehaviour
 {
-    [SerializeField] GameObject whiteQueenPrefab;
-    [SerializeField] GameObject blackQueenPrefab;
     public Tile[,] tileBoard { get; set; }
     public Piece[,] pieceBoard { get; set; }
     public Piece enPassantablePiece { get; set; }
@@ -42,7 +41,6 @@ public class Chessboard : MonoBehaviour
     void SetTileBoard()
     {
         Tile[] tiles = FindObjectsOfType<Tile>();
-        Debug.Log(tiles[0].position);
         foreach (Tile tile in tiles)
         {
             tileBoard[tile.position.x, tile.position.y] = tile;
@@ -127,7 +125,6 @@ public class Chessboard : MonoBehaviour
         {
             if (piece != null && gameManager.IsTeamTurn(piece.team))
             {
-                Debug.Log(piece.currentPosition);
                 selectPiece(piece);
             }
         }
@@ -149,12 +146,12 @@ public class Chessboard : MonoBehaviour
         selectedPiece.MovePiece(pos);
         if (IsTakablePiece(piece, tookPiece))
         {
+            gameManager.RemovePieceFromOtherPlayer(tookPiece);
             Destroy(tookPiece.gameObject);
         }
         if (piece is Pawn)
         {
             Pawn pawn = (Pawn)piece;
-            Debug.Log(pawn.HasReachedEnd());
             if (pawn.HasReachedEnd())
             {
                 PromotePawn(piece);
@@ -176,8 +173,9 @@ public class Chessboard : MonoBehaviour
     private void PromotePawn(Piece piece)
     {
         Piece newPiece = piece.team == "White" ? pieceCreator.InitializePiece(this, piece, "Queen White") : newPiece = pieceCreator.InitializePiece(this, piece, "Queen Black");
+        gameManager.RemovePieceFromPlayer(piece);
         Destroy(piece.gameObject);
-        gameManager.activePlayer.AddActivePiece(newPiece);
+        gameManager.AddPieceToPlayer(newPiece);
         selectedPiece = newPiece;
     }
 
@@ -253,4 +251,44 @@ public class Chessboard : MonoBehaviour
         }
         return currentPiece.team != takable.team;
     }
+
+    public List<Piece> GetWhitePieces(){
+        List<Piece> pieces = new List<Piece>();
+        foreach(Piece piece in pieceBoard){
+            if(piece != null && piece.team == "White"){
+                pieces.Add(piece);
+            }
+        }
+        return pieces;
+    }
+
+    public List<Piece> GetBlackPieces(){
+        List<Piece> pieces = new List<Piece>();
+        foreach(Piece piece in pieceBoard){
+            if(piece != null && piece.team == "Black"){
+                pieces.Add(piece);
+            }
+        }
+        return pieces;
+    }
+
+    public int CalculateWhiteScore(){
+        List<Piece> pieces = GetWhitePieces();
+        int score = 0;
+        foreach(Piece piece in pieces){
+            score+=piece.pieceValue;
+        }
+        return score;
+    }
+
+    public int CalculateBlackScore(){
+        List<Piece> pieces = GetBlackPieces();
+        int score = 0;
+        foreach(Piece piece in pieces){
+            score+=piece.pieceValue;
+        }
+        return score;
+    }
+
+    
 }

@@ -16,12 +16,12 @@ public class PieceCreator : MonoBehaviour
         {"Rook White",50},
         {"Queen White",90},
         {"King White", 900},
-        {"Pawn Black", -10},
-        {"Knight Black", -30},
-        {"Bishop Black", -30},
-        {"Rook Black", -50},
-        {"Queen Black", -90},
-        {"King Black", -900},
+        {"Pawn Black", 10},
+        {"Knight Black", 30},
+        {"Bishop Black", 30},
+        {"Rook Black", 50},
+        {"Queen Black", 90},
+        {"King Black", 900},
     };
     private string[,] pieceSetup = {
     {"Rook White","Pawn White",null,null,null,null,"Pawn Black","Rook Black"},
@@ -58,7 +58,6 @@ public class PieceCreator : MonoBehaviour
 
     
     void Awake(){
-        Debug.Log("awaking");
         foreach(GameObject piecePrefab in piecePrefabs){
             dictionary[piecePrefab.name] = piecePrefab;
         }
@@ -93,7 +92,6 @@ public class PieceCreator : MonoBehaviour
         int value = pieceValue[prefabName];
         piece.SetData(color,prevPos,board, value);
         board.pieceBoard[prevPos.x,prevPos.y] = piece;
-        
         return piece;
     }
 

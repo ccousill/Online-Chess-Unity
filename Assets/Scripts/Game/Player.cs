@@ -40,4 +40,12 @@ public class Player
     public void addCapturedPiece(Piece piece){
         capturedPieces.Add(piece);
     }
+
+    public int totalPieceScore(){
+        int score = 0;
+        foreach(Piece piece in activePieces){
+            score += piece.pieceValue;
+        }
+        return score;
+    }
 }
