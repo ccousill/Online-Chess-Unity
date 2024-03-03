@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
     Chessboard board;
     private Player whitePlayer;
     private Player blackPlayer;
-    private Player activePlayer;
+    public Player activePlayer;
     public bool gameOver {get; set;}
     void Start()
     {

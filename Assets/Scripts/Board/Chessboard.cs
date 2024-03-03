@@ -1,8 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices.WindowsRuntime;
-using UnityEditor;
+using System.ComponentModel;
+using Unity.Burst.Intrinsics;
+using Unity.Networking.Transport;
 using UnityEngine;
 
 
@@ -19,6 +19,10 @@ public class Chessboard : MonoBehaviour
     private PieceCreator pieceCreator;
     private BoardCreator boardCreator;
 
+    private int playerCount = -1;
+    private int currentTeam = -1;
+    private bool localGame = true;
+
 
     void Awake()
     {
@@ -32,6 +36,7 @@ public class Chessboard : MonoBehaviour
         pieceCreator.InitializePieces(this);
         SetTileBoard();
         SetPieceBoard();
+        RegisterEvents();
     }
     public void SetDependencies(GameManager gameManager)
     {
@@ -112,7 +117,7 @@ public class Chessboard : MonoBehaviour
             {
                 DeselectPiece();
             }
-            else if (piece != null && selectedPiece != piece && gameManager.IsTeamTurn(piece.team))
+            else if (piece != null && selectedPiece != piece && gameManager.IsTeamTurn(piece.team) && (currentTeam == (gameManager.activePlayer.PlayerColor == "White" ? 0 : 1)))
             {
                 selectPiece(piece);
             }
@@ -123,7 +128,7 @@ public class Chessboard : MonoBehaviour
         }
         else
         {
-            if (piece != null && gameManager.IsTeamTurn(piece.team))
+            if (piece != null && gameManager.IsTeamTurn(piece.team) && (currentTeam == (gameManager.activePlayer.PlayerColor == "White" ? 0 : 1)))
             {
                 selectPiece(piece);
             }
@@ -166,6 +171,9 @@ public class Chessboard : MonoBehaviour
         if (tookPiece is King)
         {
             gameManager.gameOver = true;
+        }
+        if(localGame){
+            currentTeam = (currentTeam == 0) ? 1 : 0;
         }
         EndTurn();
     }
@@ -290,5 +298,52 @@ public class Chessboard : MonoBehaviour
         return score;
     }
 
+    private void RegisterEvents(){
+        NetUtility.S_WELCOME += OnWelcomeServer;
+        NetUtility.C_WELCOME += OnWelcomeClient;
+        NetUtility.C_START_GAME += OnStartGameClient;
+        GameUI.Instance.SetLocalGame += OnSetLocalGame;
+    }
+
+
+    private void UnregisterEvents(){
+        NetUtility.S_WELCOME -= OnWelcomeServer;
+        NetUtility.C_WELCOME -= OnWelcomeClient;
+        NetUtility.C_START_GAME -= OnStartGameClient;
+        GameUI.Instance.SetLocalGame -= OnSetLocalGame;
+    }
     
+    private void OnWelcomeServer(NetMessage msg, NetworkConnection cnn)
+    {
+        //Client connected, assign team
+        NetWelcome nw = msg as NetWelcome;
+
+        nw.AssignedTeam = ++playerCount;
+
+        Server.Instance.SendToClient(cnn,nw);
+        
+        //start game when full
+        if(playerCount == 1){
+            Server.Instance.Broadcast(new NetStartGame());
+        }
+    }
+    private void OnWelcomeClient(NetMessage msg)
+    {
+        NetWelcome nw = msg as NetWelcome;
+        currentTeam = nw.AssignedTeam;
+        Debug.Log($"My assigned team is {nw.AssignedTeam}");
+
+        if(localGame && currentTeam ==0){
+            Server.Instance.Broadcast(new NetStartGame());
+        }
+    }
+    private void OnStartGameClient(NetMessage message)
+    {
+        //Change the camera
+        GameUI.Instance.ChangeCamera((currentTeam == 0) ? CameraAngle.whiteTeam : CameraAngle.blackTeam);
+    }
+    private void OnSetLocalGame(bool obj)
+    {
+        localGame = obj;
+    }
 }

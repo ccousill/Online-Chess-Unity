@@ -1,15 +1,10 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.ShortcutManagement;
-using UnityEngine;
-
 public class Player
 {
     public string PlayerColor {get;set;}
     public List<Piece> capturedPieces {get;}
     public List<Piece> activePieces {get;private set;}
     public Chessboard board {get;set;}
-   
 
     public Player(string playerColor,Chessboard board){
         PlayerColor = playerColor;
