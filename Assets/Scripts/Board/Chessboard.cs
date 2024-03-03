@@ -123,7 +123,16 @@ public class Chessboard : MonoBehaviour
             }
             else if (selectedPiece.CanMoveTo(pos))
             {
-                OnSelectedPieceMoved(pos, selectedPiece, piece);
+                int previousPositionX = selectedPiece.currentPosition.x;
+                int previousPositionY = selectedPiece.currentPosition.y;
+                OnSelectedPieceMoved(previousPositionX,previousPositionY, pos.x, pos.y);
+                NetMakeMove mm = new NetMakeMove();
+                mm.originalX = previousPositionX;
+                mm.originalY = previousPositionY;
+                mm.destinationX = pos.x;
+                mm.destinationY = pos.y;
+                mm.teamId = currentTeam;
+                Client.Instance.SendToServer(mm);
             }
         }
         else
@@ -136,19 +145,21 @@ public class Chessboard : MonoBehaviour
 
     }
 
-    private void OnSelectedPieceMoved(Vector2Int pos, Piece piece, Piece tookPiece)
+    private void OnSelectedPieceMoved(int originalX, int originalY, int x, int y)
     {
-        if (enPassantablePiece && CheckEnpassant(pos))
+        Piece piece = pieceBoard[originalX,originalY];
+        Piece tookPiece = GetPieceOnSquare(new Vector2Int(x,y));
+        if (enPassantablePiece && CheckEnpassant(new Vector2Int(x,y)))
         {
             tookPiece = enPassantablePiece;
         }
         enPassantablePiece = null;
         if (piece is King && !piece.hasMoved)
         {
-            CheckCastle(piece, pos);
+            CheckCastle(piece, new Vector2Int(x,y));
         }
-        UpdateBoardOnPieceMove(pos, piece.currentPosition, piece, tookPiece);
-        selectedPiece.MovePiece(pos);
+        UpdateBoardOnPieceMove(new Vector2Int(x,y), piece.currentPosition, piece, tookPiece);
+        piece.MovePiece(new Vector2Int(x,y));
         if (IsTakablePiece(piece, tookPiece))
         {
             gameManager.RemovePieceFromOtherPlayer(tookPiece);
@@ -161,7 +172,7 @@ public class Chessboard : MonoBehaviour
             {
                 PromotePawn(piece);
             }
-            if (Mathf.Abs(pawn.previousPosition.y - pos.y) == 2)
+            if (Mathf.Abs(pawn.previousPosition.y - y) == 2)
             {
                 enPassantablePiece = piece;
             }
@@ -300,16 +311,20 @@ public class Chessboard : MonoBehaviour
 
     private void RegisterEvents(){
         NetUtility.S_WELCOME += OnWelcomeServer;
+        NetUtility.S_MAKE_MOVE += OnMakeMoveServer;
         NetUtility.C_WELCOME += OnWelcomeClient;
         NetUtility.C_START_GAME += OnStartGameClient;
+        NetUtility.C_MAKE_MOVE += OnMakeMoveClient;
         GameUI.Instance.SetLocalGame += OnSetLocalGame;
     }
 
 
     private void UnregisterEvents(){
         NetUtility.S_WELCOME -= OnWelcomeServer;
+        NetUtility.S_MAKE_MOVE -= OnMakeMoveServer;
         NetUtility.C_WELCOME -= OnWelcomeClient;
         NetUtility.C_START_GAME -= OnStartGameClient;
+        NetUtility.C_MAKE_MOVE -= OnMakeMoveClient;
         GameUI.Instance.SetLocalGame -= OnSetLocalGame;
     }
     
@@ -327,6 +342,13 @@ public class Chessboard : MonoBehaviour
             Server.Instance.Broadcast(new NetStartGame());
         }
     }
+
+    private void OnMakeMoveServer(NetMessage msg, NetworkConnection cnn)
+    {
+        NetMakeMove mm = msg as NetMakeMove;
+        //Receieve message and broadcast
+        Server.Instance.Broadcast(mm);
+    }
     private void OnWelcomeClient(NetMessage msg)
     {
         NetWelcome nw = msg as NetWelcome;
@@ -337,10 +359,19 @@ public class Chessboard : MonoBehaviour
             Server.Instance.Broadcast(new NetStartGame());
         }
     }
-    private void OnStartGameClient(NetMessage message)
+    private void OnStartGameClient(NetMessage msg)
     {
         //Change the camera
         GameUI.Instance.ChangeCamera((currentTeam == 0) ? CameraAngle.whiteTeam : CameraAngle.blackTeam);
+    }
+    private void OnMakeMoveClient(NetMessage msg)
+    {
+        //make move on our client
+        NetMakeMove mm = msg as NetMakeMove;
+        Debug.Log($"MM: {mm.teamId} : {mm.originalX} : {mm.originalY} -> {mm.destinationX} {mm.destinationY}");
+        if(mm.teamId != currentTeam){  
+            OnSelectedPieceMoved(mm.originalX,mm.originalY,mm.destinationX,mm.destinationY);
+        }
     }
     private void OnSetLocalGame(bool obj)
     {

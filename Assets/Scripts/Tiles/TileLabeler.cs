@@ -11,13 +11,13 @@ public class TileLabeler : MonoBehaviour
     Vector2Int coordinates;
     void Awake(){
         label = GetComponent<TextMeshPro>();
-        DisplayCoordinates();
+        // DisplayCoordinates();
     }
 
     void Update()
     {
         if(!Application.isPlaying){
-            DisplayCoordinates();
+            // DisplayCoordinates();
             UpdateName();
         }
         UpdateName();
