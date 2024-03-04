@@ -66,6 +66,11 @@ public class GameUI : MonoBehaviour
         menuAnimator.SetTrigger("OnlineMenu");
     }
 
+    public void OnLeaveFromGameMenu(){
+        ChangeCamera(CameraAngle.menu);
+        menuAnimator.SetTrigger("StartMenu");
+    }
+
     private void RegisterEvents(){
         NetUtility.C_START_GAME += OnStartGameClient;
     }

@@ -64,7 +64,13 @@ public class PieceCreator : MonoBehaviour
     }
 
     public void InitializePieces(Chessboard board){
-        GameObject PiecesObject = new GameObject("Pieces");
+        GameObject PiecesObject;
+        
+        if(transform.Find("Pieces")){
+            PiecesObject = transform.Find("Pieces").gameObject;
+        }else{
+            PiecesObject = new GameObject("Pieces");
+        }
         PiecesObject.transform.parent = transform;
         for(int x = 0;x<8;x++){
             for(int y = 0;y <8;y++){

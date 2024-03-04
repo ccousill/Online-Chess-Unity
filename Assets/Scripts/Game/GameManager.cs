@@ -1,7 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -11,13 +7,10 @@ public class GameManager : MonoBehaviour
     Chessboard board;
     private Player whitePlayer;
     private Player blackPlayer;
-    public Player activePlayer;
-    public bool gameOver {get; set;}
+    public Player activePlayer {get;set;}
     void Start()
     {
         board = FindObjectOfType<Chessboard>();
-        gameOver = false;
-        InitializePlayers();
         StartNewGame();
     }
 
@@ -26,6 +19,8 @@ public class GameManager : MonoBehaviour
         Player black = new Player("Black",board);
         whitePlayer = white;
         blackPlayer = black;
+        whitePlayer.ClearActivePieces();
+        blackPlayer.ClearActivePieces();
         foreach(Piece piece in board.AllPieces()){
             if(piece.team == "White"){
                 piece.player = white;
@@ -37,16 +32,15 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void StartNewGame(){
+    public void StartNewGame(){
+        InitializePlayers();
         board.SetDependencies(this);
         activePlayer = whitePlayer;
+        Debug.Log(activePlayer.PlayerColor);
         GenerateAllMovesOfPlayer(activePlayer);
     }
 
     public void EndTurn(){
-        if(gameOver){
-            GameOverSequence();
-        }
         GenerateAllMovesOfPlayer(activePlayer);
         GenerateAllMovesOfPlayer(getOtherPlayer(activePlayer));
         ChangeTeam();
@@ -68,10 +62,7 @@ public class GameManager : MonoBehaviour
         return activePlayer.PlayerColor == team;
     }
 
-    private void GameOverSequence()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
+   
 
     public void RemovePieceFromPlayer(Piece piece){
         activePlayer.RemoveActivePiece(piece);

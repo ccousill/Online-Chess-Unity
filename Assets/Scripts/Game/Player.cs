@@ -25,6 +25,10 @@ public class Player
         }
     }
 
+    public void ClearActivePieces(){
+        activePieces.Clear();
+    }
+
     public void GenerateAllPossibleMoves(){
         foreach(var piece in activePieces){
             if(board.HasPiece(piece)){
