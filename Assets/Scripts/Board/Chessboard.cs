@@ -62,10 +62,8 @@ public class Chessboard : MonoBehaviour
     void SetPieceBoard()
     {
         Piece[] pieces = FindObjectsOfType<Piece>();
-        Debug.Log(pieces.Length);
         foreach (Piece piece in pieces)
         {
-            Debug.Log(piece + " " + piece.currentPosition.x + " " + piece.currentPosition.y);
             pieceBoard[piece.currentPosition.x, piece.currentPosition.y] = piece;
         }
     }
@@ -234,7 +232,6 @@ public class Chessboard : MonoBehaviour
         }
         else
         {
-            Debug.Log("wants rematch");
             NetRematch rm = new NetRematch();
             rm.teamId = currentTeam;
             rm.wantRematch = 1;
@@ -281,7 +278,6 @@ public class Chessboard : MonoBehaviour
 
     private void shutdownRelay(){
         Client.Instance.Shutdown();
-        Server.Instance.Shutdown();
     }
 
     private void PromotePawn(Piece piece)
@@ -468,8 +464,7 @@ public class Chessboard : MonoBehaviour
         if(playerRematch[0] && playerRematch[1]){
             onResetButton();
         }
-        if(rm.teamId != currentTeam && !localGame){
-
+        else if(rm.teamId != currentTeam && !localGame){
             rematchIndicator.transform.GetChild((rm.wantRematch == 1) ? 0 : 1).gameObject.SetActive(true);
             if(rm.wantRematch != 1){
                 rematchButton.interactable = false;
@@ -502,7 +497,6 @@ public class Chessboard : MonoBehaviour
     {
         //make move on our client
         NetMakeMove mm = msg as NetMakeMove;
-        //Debug.Log($"MM: {mm.teamId} : {mm.originalX} : {mm.originalY} -> {mm.destinationX} {mm.destinationY}");
         if (mm.teamId != currentTeam)
         {
             OnSelectedPieceMoved(mm.originalX, mm.originalY, mm.destinationX, mm.destinationY);

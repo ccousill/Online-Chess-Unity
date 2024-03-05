@@ -36,7 +36,6 @@ public class GameManager : MonoBehaviour
         InitializePlayers();
         board.SetDependencies(this);
         activePlayer = whitePlayer;
-        Debug.Log(activePlayer.PlayerColor);
         GenerateAllMovesOfPlayer(activePlayer);
     }
 

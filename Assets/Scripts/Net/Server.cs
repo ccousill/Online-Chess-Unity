@@ -1,8 +1,6 @@
 using System;
-using System.Net.NetworkInformation;
 using Unity.Collections;
 using Unity.Networking.Transport;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class Server : MonoBehaviour
@@ -19,7 +17,7 @@ public class Server : MonoBehaviour
     public NetworkDriver driver;
     private NativeList<NetworkConnection> connections;
 
-    private bool isActive = false;
+    public bool isActive = false;
     private const float keepAliveTickRate = 20.0f;
     private float lastKeepAlive;
 
@@ -28,6 +26,7 @@ public class Server : MonoBehaviour
     //Methods
     public void Init(ushort port){
         driver = NetworkDriver.Create();
+        
         NetworkEndpoint endpoint = NetworkEndpoint.AnyIpv4;
         endpoint.Port = port;
 
@@ -97,7 +96,6 @@ public class Server : MonoBehaviour
         {
             NetworkEvent.Type cmd;
             while((cmd = driver.PopEventForConnection(connections[i],out stream)) != NetworkEvent.Type.Empty){
-
                 if(cmd == NetworkEvent.Type.Data){
                     NetUtility.OnData(stream,connections[i],this);
                 }
@@ -105,7 +103,7 @@ public class Server : MonoBehaviour
                     Debug.Log("Client disconnected from server");
                     connections[i] = default(NetworkConnection);
                     connectionDropped?.Invoke();
-                    Shutdown(); //shutdown when other player disconnects
+                    //shutdown when other player disconnects
                 }
             }
         }
@@ -122,7 +120,6 @@ public class Server : MonoBehaviour
     public void Broadcast(NetMessage msg){
         for(int i = 0; i <connections.Length;i++){
             if(connections[i].IsCreated){
-                //Debug.Log($"sending {msg.Code} to : {connections[i]}");
                 SendToClient(connections[i],msg);
             }
         }

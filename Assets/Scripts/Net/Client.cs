@@ -32,6 +32,7 @@ public class Client : MonoBehaviour
     {
         if (isActive)
         {
+            driver.Disconnect(connection);
             UnregisterToEvent();
             driver.Dispose();
             isActive = false;

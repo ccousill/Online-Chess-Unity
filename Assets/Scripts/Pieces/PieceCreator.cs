@@ -50,9 +50,9 @@ public class PieceCreator : MonoBehaviour
     {"Knight White","Pawn White",null,null,null,null,"Pawn Black","Knight Black"},
     {"Bishop White","Pawn White",null,null,null,null,"Pawn Black","Bishop Black"},
     {"Queen White","Pawn White",null,null,null,null,"Pawn Black","Queen Black"},
-    {"King White","Pawn White",null,null,null,null,"Pawn Black","King Black"},
+    {"King White","Pawn White",null,null,null,null,"Pawn Black",null},
     {"Bishop White","Pawn White",null,null,null,null,"Pawn White",null},
-    {"Knight White","Pawn White",null,null,null,null,"Pawn Black","Knight Black"},
+    {"Knight White","Pawn White","King Black",null,null,null,"Pawn Black","Knight Black"},
     {"Rook White","Pawn White",null,null,null,null,"Pawn Black","Rook Black"}
     };
 
