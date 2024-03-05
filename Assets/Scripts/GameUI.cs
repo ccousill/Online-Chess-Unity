@@ -76,6 +76,7 @@ public class GameUI : MonoBehaviour
     public void OnHostBackButton()
     {
         client.Shutdown();
+        server.Shutdown();
         menuAnimator.SetTrigger("OnlineMenu");
     }
 

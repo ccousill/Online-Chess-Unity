@@ -30,10 +30,12 @@ public class Chessboard : MonoBehaviour
     private int currentTeam = -1;
     private bool localGame = true;
     private bool[] playerRematch = new bool[2];
+    public bool isHost {get;set;}
 
 
     void Awake()
     {
+        isHost = false;
         tileBoard = new Tile[BoardSize, BoardSize];
         pieceBoard = new Piece[BoardSize, BoardSize];
         enPassantablePiece = null;
@@ -265,7 +267,10 @@ public class Chessboard : MonoBehaviour
         NetRematch rm = new NetRematch();
         rm.teamId = currentTeam;
         rm.wantRematch = 0;
-        Client.Instance.SendToServer(rm);
+
+        if(!isHost){
+            Client.Instance.SendToServer(rm);
+        }
 
         onResetButton();
         GameUI.Instance.OnLeaveFromGameMenu();
@@ -276,8 +281,17 @@ public class Chessboard : MonoBehaviour
         currentTeam = -1;
     }
 
+    public void resetServerBoard(){
+        onResetButton();
+        localGame = false;
+        playerCount = -1;
+        currentTeam = -1;
+        GameUI.Instance.OnLeaveFromGameMenu();
+    }
+
     private void shutdownRelay(){
         Client.Instance.Shutdown();
+        Server.Instance.Shutdown();
     }
 
     private void PromotePawn(Piece piece)
@@ -440,12 +454,12 @@ public class Chessboard : MonoBehaviour
     {
         //Client connected, assign team
         NetWelcome nw = msg as NetWelcome;
-
         nw.AssignedTeam = ++playerCount;
 
         Server.Instance.SendToClient(cnn, nw);
 
         //start game when full
+        Debug.Log("Player count" + playerCount);
         if (playerCount == 1)
         {
             Server.Instance.Broadcast(new NetStartGame());
@@ -454,6 +468,9 @@ public class Chessboard : MonoBehaviour
 
     private void OnRematchServer(NetMessage msg, NetworkConnection cnn)
     {
+        if(isHost && !localGame){
+            resetServerBoard();
+        }
         Server.Instance.Broadcast(msg);
     }
 

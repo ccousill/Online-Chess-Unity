@@ -12,10 +12,12 @@ public class Server : MonoBehaviour
 
     private void Awake(){
         Instance = this;
+        board = FindObjectOfType<Chessboard>();
     }
     #endregion
     public NetworkDriver driver;
     private NativeList<NetworkConnection> connections;
+    Chessboard board;
 
     public bool isActive = false;
     private const float keepAliveTickRate = 20.0f;
@@ -25,6 +27,7 @@ public class Server : MonoBehaviour
 
     //Methods
     public void Init(ushort port){
+        board.isHost = true;
         driver = NetworkDriver.Create();
         
         NetworkEndpoint endpoint = NetworkEndpoint.AnyIpv4;
@@ -103,8 +106,22 @@ public class Server : MonoBehaviour
                     Debug.Log("Client disconnected from server");
                     connections[i] = default(NetworkConnection);
                     connectionDropped?.Invoke();
-                    //shutdown when other player disconnects
+                    board.resetServerBoard();
+                    //shutdown when other player disconnects and reset server when player disconnects to reset states
                 }
+            }
+        }
+    }
+
+    void DisconnectAllClients()
+    {
+        // Iterate through the list and disconnect each client
+        foreach (var connection in connections)
+        {
+            if (connection != null && connection != default(NetworkConnection))
+            {
+                // Disconnect the client
+                connection.Disconnect(driver);
             }
         }
     }

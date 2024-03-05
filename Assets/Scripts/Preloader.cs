@@ -20,6 +20,7 @@ public class Preloader : MonoBehaviour
     }
 
     public void OnOnlineServerHostStart(){
+        GameUI.Instance.SetLocalGame?.Invoke(false);
         Server.Instance.Init(8007);
     }
 }
